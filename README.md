@@ -55,7 +55,7 @@ Stop and remove the container with the command:
 docker stop customers_create
 ```
 
-**Stopping the create_customers container is required because it keeps the volume locked as long as it is running.**
+**Stopping the customers\_create container is required because it keeps the volume locked as long as it is running.**
 
 In subdirectory docker/users run the commands:
 ```
