@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" 
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/header::header(title='index')">
+</head>  
+<body>
+            
+	<h1>Welcome to Bactrian page</h1>
+	<br/><br/>
+	
+	<a th:href="@{/allCustomers}" th:text="'All Customers'"></a><br/><br/>
+	
+	<div sec:authorize="hasAuthority('CREATE')">
+		<a th:href="@{/createCustomer}" th:text="'Add a new customer'"></a><br/><br/>
+	</div>
+ 
+ 	<div sec:authorize="hasAuthority('UPDATE')">
+		<a th:href="@{/updateCustomer}" th:text="'Update customer address'"></a><br/><br/>
+	</div>
+
+ 	<div sec:authorize="hasAuthority('DELETE')">
+		<a th:href="@{/deleteCustomer}" th:text="'Delete customer'"></a>
+	</div>
+
+</body>
+</html>

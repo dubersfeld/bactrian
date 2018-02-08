@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header::header(title='unauthorized')">
+</head>  
+<body>
+        
+    <div th:replace="fragments/main::displayPost"></div>
+        
+    <h2 th:text="'Unauthorized request'"></h2>
+        
+     
+    </body>
+</html>

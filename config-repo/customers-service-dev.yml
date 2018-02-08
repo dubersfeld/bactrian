@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  context-path: /customers-service
+
+
+spring:
+  jpa:
+    database: "MYSQL"
+   
+    show-sql: "true"
+   
+  database:
+    driverClassName: "org.mysql.Driver"
+
+  datasource:
+    platform:  "mysql"
+    url: "jdbc:mysql://customers-mysql:3306/bactrian_customers"
+    username: "dbuser"
+    password: "password1234"
+    testWhileIdle: "true"
+    validationQuery: "SELECT 1"
+
+resourceUriPath: 
+  customers-service/api/customer
+
+resourceUriPort:
+  8080
+
+resourceUriHost:
+  customers-service
+
+
+
+
+

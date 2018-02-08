@@ -1,0 +1,12 @@
+
+
+resourceUriBase: 
+  http://customers-service:8080/customers-service/api
+
+
+usersResourceUriBase: 
+  http://users-service:9090/users-service/api/user
+
+server:
+  context-path: /bactrian
+  port: 8090

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='createCustomer')">
+</head>  
+<body>
+        
+    <div th:replace="fragments/main::displayPost"></div>
+        
+    <h2 th:text="'createCustomer'"></h2>
+        
+        <form action="#" th:action="@{createCustomer}" th:object="${customerForm}" method="post">
+    	<p><span th:text="'First name' + ': '"></span><input type="text" th:field="*{firstName}" /><span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" th:class="errors"></span></p>
+        <p><span th:text="'Last name' + ': '"></span><input type="text" th:field="*{lastName}" /><span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" th:class="errors"></span></p>
+        <p><span th:text="'City' + ': '"></span><input type="text" th:field="*{city}" /><span th:if="${#fields.hasErrors('city')}" th:errors="*{city}" th:class="errors"></span></p>
+        <p><input type="submit" th:value="'valid'" /> <input type="reset" th:value="'reset'" /></p>
+    	</form>
+
+    </body>
+</html>

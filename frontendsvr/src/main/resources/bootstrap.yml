@@ -1,0 +1,15 @@
+#server:
+#  context-path: /bactrian
+#  port: 8090  
+      
+spring:
+  application:
+    name: frontend
+  profiles:
+    active:
+      default
+#  cloud:
+#    config:
+#      uri: http://bactrian-config:8888
+      
+      

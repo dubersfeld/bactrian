@@ -1,0 +1,100 @@
+version: '3.4'
+
+services:
+
+  # bactrian-config 
+  bactrian-config:
+    image:
+      bactrian/confsvr
+    volumes:
+      - type: bind
+        source: /home/dominique/workspace-bactrian-publish/config-repo
+        target: /tmp/config-repo
+    ports:
+      - 8888:8888
+
+
+  # customers-mysql 
+  customers-mysql:
+    image: mysql
+    volumes:
+      - type: volume
+        source: dbdata
+        target: /var/lib/mysql
+    restart: always
+   
+  # customers-service
+  customers-service:
+    image: bactrian/customers-service
+    depends_on:
+      - customers-mysql
+      - bactrian-config
+    ports:
+      - 8080:8080
+    environment:
+      - CONFIGSERVER_HOST=bactrian-config
+      - CONFIGSERVER_PORT=8888
+      - DATABASE_HOST=customers-mysql
+      - DATABASE_PORT=3306
+      - BACTRIAN_CONFIG_URI=http://bactrian-config:8888
+      - PROFILE=dev
+
+
+  # users-mysql not changed
+  users-mysql:
+    image: mysql
+    volumes:
+      - type: volume
+        source: dbusers
+        target: /var/lib/mysql
+    restart: always
+   
+  # new version
+  users-service:
+    image: bactrian/users-service
+    depends_on:
+      - users-mysql
+      - bactrian-config
+    ports:
+      - 9090:9090
+    environment:
+      - CONFIGSERVER_HOST=bactrian-config
+      - CONFIGSERVER_PORT=8888
+      - DATABASE_HOST=users-mysql
+      - DATABASE_PORT=3306
+      - BACTRIAN_CONFIG_URI=http://bactrian-config:8888
+      - PROFILE=dev
+
+
+  #frontend
+  frontend:
+    image: bactrian/frontendsvr
+    depends_on:
+      - customers-service
+      - users-service
+    ports:
+      - 8090:8090
+    environment:
+      - BACTRIAN_CUSTOMERS_HOST=customers-service
+      - BACTRIAN_CUSTOMERS_PORT=8080  
+      - BACTRIAN_USERS_HOST=users-service
+      - BACTRIAN_USERS_PORT=9090
+      - BACTRIAN_CONFIG_URI=http://bactrian-config:8888
+      - PROFILE=dev
+
+volumes:
+
+  dbdata:
+    external: 
+      name: bactrian_customers_db
+
+  dbusers:
+    external: 
+      name: bactrian_users_db
+
+
+
+
+
+    
+

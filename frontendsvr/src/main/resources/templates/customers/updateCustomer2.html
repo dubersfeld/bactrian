@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header::header(title='updateCustomer')">
+</head> 
+<body>
+
+	<div>
+	
+	<div th:replace="fragments/main::displayPost"></div>
+	
+	<h1 th:text="'Update customer address'"></h1><br /><br />
+	                 
+	<form action="#" th:action="@{updateCustomer2}" th:object="${customer}" method="post">
+		<p><span th:text="'Customer Id: '"></span><input type="text" th:field="*{id}" th:readonly="readonly" /><span th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span></p>
+    	<p><span th:text="'First name: '"></span><input type="text" th:field="*{firstName}" th:readonly="readonly" /><span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" th:class="errors"></span></p>
+        <p><span th:text="'Last name: '"></span><input type="text" th:field="*{lastName}" th:readonly="readonly" /><span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" th:class="errors"></span></p>
+        <p><span th:text="'City: '" ></span><input type="text" th:field="*{city}" /><span th:if="${#fields.hasErrors('city')}" th:errors="*{city}" th:class="errors"></span></p>
+        
+        <p><input type="submit" th:value="'valid'" /><input type="reset" th:value="'reset'" /></p>
+	</form>
+    	
+    </div>
+    	
+</body>
+</html>

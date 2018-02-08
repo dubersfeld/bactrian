@@ -1,0 +1,14 @@
+#server:
+#  context-path: /customers-service
+#  port: 8080  
+
+spring:
+  application:
+    name: customers-service
+  profiles:
+    active:
+      default
+#  cloud:
+#    config:
+#      uri: http://bactrian-config:8888
+      

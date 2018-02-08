@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header::header(title='createCustomerSuccess')">
+</head>  
+<body>
+	
+	<div th:replace="fragments/main::displayPost"></div>
+	
+	<h1 th:text="'createCustomer successful'"></h1><br /><br />
+	
+    <p th:text="'uri: ' + ${uri}" />
+    
+</body>
+</html>
