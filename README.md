@@ -1,4 +1,4 @@
-I present here a microservice-oriented application that uses some basic Docker features including Docker Compose.
+I present here a microservice-oriented application that uses some basic Docker features including Docker Compose and also Spring Cloud Configuration.
 
 Here are the prerequisites for running the complete application:
 
@@ -21,7 +21,7 @@ Two Docker volumes are used for persisting the two databases when the applicatio
 
 Here are the steps to run the application.
 
-##1. Database volumes creation
+# 1. Database volumes creation
 
 In subdirectory docker/customers run the commands:
 ```
@@ -76,7 +76,7 @@ Richard  | r1o2t3a4s | VIEW, CREATE, UPDATE, DELETE
 
 Stop and remove the container with the command: `docker stop users_create`
 
-#2. Spring Boot images creation
+# 2. Spring Boot images creation
 
 In each of the 4 Maven project subdirectories:
 confsvr
@@ -96,7 +96,7 @@ bactrian/frontendsvr
 This command makes use of the docker-maven-plugin artifact that is included in all pom.xml files.
 
 
-#3. Launching the application
+# 3. Launching the application
 In subdirectory docker edit the file docker-compose.yml to match your own absolute path for config-repo bind mount. 
 Then run the command in the same subdirectory: `docker-compose up`
 
