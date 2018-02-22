@@ -99,13 +99,7 @@ public class CustomerController {
 		} else {
 			try {
 				long customerId = form.getId();
-				
-				System.out.println("Controller.updateCustomer1 "
-						+ customerId);
-				
 				Customer customer = customerService.getCustomer(customerId);
-				
-				
 				model.addAttribute("customer", customer);
 				return "customers/updateCustomer2";
 			} catch (CustomerNotFoundException e) {

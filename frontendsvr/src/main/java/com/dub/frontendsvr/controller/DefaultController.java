@@ -46,6 +46,7 @@ public class DefaultController {
     
     	modelAndView.setViewName("login");
     	return modelAndView;
+
 	}
 	
 	
@@ -59,4 +60,5 @@ public class DefaultController {
         return "redirect:/login?logout";
 	}
 	
+
 }
