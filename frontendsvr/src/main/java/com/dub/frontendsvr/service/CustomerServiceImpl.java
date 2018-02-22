@@ -1,21 +1,16 @@
 package com.dub.frontendsvr.service;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 
+import com.dub.frontendsvr.clients.CustomerFeignClient;
 import com.dub.frontendsvr.domain.Customer;
 import com.dub.frontendsvr.domain.CustomerList;
 import com.dub.frontendsvr.exceptions.CustomerAccessDeniedException;
@@ -23,25 +18,22 @@ import com.dub.frontendsvr.exceptions.CustomerNotFoundException;
 import com.dub.frontendsvr.exceptions.DuplicateCustomerException;
 import com.dub.frontendsvr.exceptions.UnauthorizedException;
 
+import feign.FeignException;
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
+	
 
-	String resourceUri; 
-	
-	@Value("${resourceUriBase}")
-	String resourceUriBase;
-	
-	RestOperations restTemplate = new RestTemplate();
+	@Autowired
+	private CustomerFeignClient customerFeignClient;
 	
 	
 	@Override
 	public List<Customer> allCustomers() {
-		
-		resourceUri = resourceUriBase + "/customerList";
-		
-		CustomerList customerResponse =
-		        restTemplate.getForObject(resourceUri, CustomerList.class);
-		           
+			
+		CustomerList customerResponse 
+					= customerFeignClient.getCustomerList(); 
+	
 		List<Customer> list = customerResponse.getCustomers();
 			
 		for (Customer customer : list) {
@@ -54,12 +46,12 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public URI createCustomer(Customer customer) {
-		
-		resourceUri = resourceUriBase + "/createCustomer";
-			
+				
 		try {
-			ResponseEntity<Customer> response = restTemplate.postForEntity(resourceUri, customer, Customer.class);
-		
+			
+			ResponseEntity<Customer> response 
+				= customerFeignClient.createCustomer(customer);
+			
 			HttpStatus status =	response.getStatusCode();
 			
 			if (status == HttpStatus.OK) {
@@ -72,60 +64,55 @@ public class CustomerServiceImpl implements CustomerService {
 			} else {
 				throw new DuplicateCustomerException();
 			}
-		} catch (HttpStatusCodeException e) {	
-			if (e.getStatusCode() == HttpStatus.NOT_ACCEPTABLE) {
+		} catch (FeignException e) {
+			System.out.println("FeignException " 
+							+ e.status());
+			
+			if (e.status() == 406) {
 				throw new DuplicateCustomerException();
 			} else {
 				throw new RuntimeException();
-			}
+			}	
 		}
 	}
 
 
 	@Override
 	public Customer getCustomer(long id) {
-		
-		resourceUri = resourceUriBase + "/customer/" + id;
-					
-		HttpHeaders headers = new HttpHeaders();
-		
-		List<MediaType> list = new ArrayList<>();
-		list.add(MediaType.APPLICATION_JSON);
-		headers.setAccept(list);
-		
-		HttpEntity<Customer> request = new HttpEntity<>(null, headers);
-				
+			
 		try {
-			ResponseEntity<Customer> response = restTemplate.exchange(
-				resourceUri, HttpMethod.GET, request, Customer.class);
-		
+					
+			ResponseEntity<Customer> response = customerFeignClient.getCustomer(id);
+			
 			if (response.getStatusCode() == HttpStatus.OK) {
 				return response.getBody();
 			} else {
 				throw new RuntimeException("Error");
 			}	
-		} catch (HttpStatusCodeException e) {			
-    		if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+		} catch (FeignException e) {	
+			System.out.println("FeignException "
+					+ e.status());
+			
+    		if (e.status() == HttpStatus.NOT_FOUND.value()) {
     			throw new CustomerNotFoundException();
-    		} else if (e.getStatusCode() == HttpStatus.UNAUTHORIZED 
-    								|| e.getStatusCode() == HttpStatus.FORBIDDEN) {
+    		} else if (e.status() == HttpStatus.UNAUTHORIZED.value() 
+    								|| e.status() == HttpStatus.FORBIDDEN.value()) {
     			throw new UnauthorizedException();
     		} else {
     			throw new RuntimeException();	
     		}
-    			
-		}
-		
+    		
+		}	
 	}
 
 
 	@Override
 	public void updateCustomer(Customer customer) {
 		
-		resourceUri = resourceUriBase + "/customer/" + customer.getId();
-						
 		try {
-			restTemplate.put(resourceUri, customer);
+			customerFeignClient.updateCustomer(
+											customer.getId(), 
+											customer);	
 		} catch (HttpStatusCodeException e) {
 			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED 
 					|| e.getStatusCode() == HttpStatus.FORBIDDEN) {
@@ -133,26 +120,30 @@ public class CustomerServiceImpl implements CustomerService {
 			} else {
 				throw new RuntimeException();
 			}
-		}
-		
+		}	
 	}
 
 
 	@Override
 	public void deleteCustomer(long id) {
 		
-		resourceUri = resourceUriBase + "/customer/" + id;
-
 		try {
-			restTemplate.delete(resourceUri);
-		
-		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-				throw new CustomerNotFoundException();
-			}
 			
+			customerFeignClient.deleteCustomer(id);
+					
+		} catch (FeignException e) {
+			
+			System.out.println("FeignException "
+					+ e.status());
+			
+    		if (e.status() == HttpStatus.NOT_FOUND.value()) {
+    			throw new CustomerNotFoundException();
+    		} else if (e.status() == HttpStatus.UNAUTHORIZED.value() 
+    								|| e.status() == HttpStatus.FORBIDDEN.value()) {
+    			throw new UnauthorizedException();
+    		} else {
+    			throw new RuntimeException();	
+    		}
 		}
-		
 	}
-
 }

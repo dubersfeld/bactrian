@@ -12,12 +12,12 @@
                     
             <div th:if="${param.error}">
             	<div class="alert alert-danger">
-                	<p th:text="#{login.invalid}"></p>
+                	<p th:text="'login invalid'"></p>
                	</div>
          	</div>
           	<div th:if="${param.logout}">
             	<div class="alert alert-info">
-                	<p th:text="#{loggedOut}"></p>
+                	<p th:text="'logged out'"></p>
            		</div>
            	</div>
                     

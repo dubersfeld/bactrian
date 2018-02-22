@@ -9,6 +9,10 @@
 	<h1>Welcome to Bactrian page</h1>
 	<br/><br/>
 	
+	<br /><br />
+  	<a th:href="@{/logout}" th:text="'Sign Out'"></a>
+	<br /><br />
+	
 	<a th:href="@{/allCustomers}" th:text="'All Customers'"></a><br/><br/>
 	
 	<div sec:authorize="hasAuthority('CREATE')">
